@@ -11,15 +11,15 @@
     <div class="container">
         <header class="text-center my-4">
             <img src="img/logo 4.jpg" alt="Mos Burgers Logo" class="img-fluid mb-3" style="max-width: 200px;">
-            <h1 class="display-4" style="color: #b22222;"><b>MOS Burgers - Store Management System</b></h1> 
+            <h1 class="display-4" style="color: #b22222;"><b>MOS Burgers</b></h1> 
         </header>
 
-        <nav class="navbar navbar-expand-lg navbar-light mb-4" style="background-color: #f5deb3;"></nav>
+        <nav class="navbar navbar-expand-lg navbar-light mb-4" style="background-color: #f5deb3;">
             <div class="container-fluid">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a href="#store-management" class="nav-link" style="color: #b22222;">Store Management</a></li>
-                    <li class="nav-item"><a href="" class="nav-link" style="color: #b22222;">Order Management</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link" style="color: #b22222;">Customer Management</a></li>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex flex-row">
+                    <li class="nav-item"><a href="#store-management" class="nav-link" style="color: #000000;"><h4><b>Store Management    |</b></h4></a></li>
+                    <li class="nav-item"><a href="" class="nav-link" style="color: #211d1d;"><h4><b>Order Management    |</b></h4></a></li>
+                    <li class="nav-item"><a href="#" class="nav-link" style="color: #000000;"><h4><b>Customer Management</b></h4></a></li>
                 </ul>
             </div>
         </nav>
@@ -70,6 +70,23 @@
                 <button type="button" id="addFoodItemBtn" class="btn btn-primary mt-3" style="background-color: #b22222;" onclick="addFoodItem()">Add Item</button>
             </form>
         </section>
+
+        <!-- Order Management Section -->
+        <section id="order-management" class="mb-5">
+            <h2 style="color: #b22222;">Order Management</h2>
+            <input type="text" id="searchItemInput" class="form-control" placeholder="Search Item by Name or Code" onkeyup="searchItem()">
+            <div id="itemDetails" class="mt-3"></div>
+            <div id="cart" class="mt-3">
+                <h4 style="color: #b22222;">Order Cart</h4>
+                <ul id="cartItems" class="list-group mb-3"></ul>
+                <div class="form-group">
+                    <label for="discount">Order Discount (%)</label>
+                    <input type="number" id="orderDiscount" class="form-control" placeholder="Enter discount percentage">
+                </div>
+                <button class="btn btn-primary mt-3" style="background-color: #b22222;" onclick="finalizeOrder()">Finalize Order</button>
+            </div>
+        </section>
+
 
     </div>
 

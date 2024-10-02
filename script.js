@@ -80,4 +80,48 @@ function deleteFoodItem(index) {
     displayFoodItems(); 
 }
 
+function searchItem() {
+    let input = document.getElementById('searchItemInput').value.toLowerCase();
+    let result = foodItems.find(item => item.name.toLowerCase().includes(input) || item.code.toLowerCase().includes(input));
+    if (result) {
+        document.getElementById('itemDetails').innerHTML = `
+            <strong>Item:</strong> ${result.name} <br>
+            <strong>Price:</strong> LKR ${result.price} <br>
+            <strong>Expiration:</strong> ${result.expiration} <br>
+            <strong>Discount:</strong> ${result.discount}% <br>
+            <button class="btn btn-success mt-3" onclick="addToCart('${result.code}')">Add to Cart</button>
+        `;
+    } else {
+        document.getElementById('itemDetails').innerHTML = 'No item found.';
+    }
+}
+
+function addToCart(itemCode) {
+    let item = foodItems.find(item => item.code === itemCode);
+    let quantity = prompt('Enter quantity:', 1);
+
+    if (item && quantity > 0) {
+        let discountedPrice = item.price - (item.price * (item.discount / 100));
+        let cartItem = { ...item, quantity: Number(quantity), discountedPrice };
+        cart.push(cartItem);
+        displayCart();
+    }
+}
+
+function displayCart() {
+    let cartItemsContainer = document.getElementById('cartItems');
+    cartItemsContainer.innerHTML = ''; 
+
+    cart.forEach(item => {
+        let totalItemPrice = item.discountedPrice * item.quantity;
+        let listItem = document.createElement('li');
+        listItem.className = 'list-group-item';
+        listItem.innerHTML = `
+            <strong>${item.name}</strong> - LKR ${item.discountedPrice} x ${item.quantity} = LKR ${totalItemPrice} (Discount Applied: ${item.discount}%)
+            <button class="btn btn-danger btn-sm float-end" onclick="removeFromCart('${item.code}')">Remove</button>
+        `;
+        cartItemsContainer.appendChild(listItem);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', displayFoodItems);
