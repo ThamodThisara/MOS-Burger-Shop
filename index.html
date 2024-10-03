@@ -111,7 +111,19 @@
             <h4 class="mt-4" style="color: #b22222;">Customer Orders</h4>
             <div id="customerOrders" class="border p-3 bg-light"></div>
         </section>
+        <!-- Receipt Section -->
+        <section id="receiptSection" class="mb-5">
+            <h4>Order Receipt Preview</h4>
+            <pre id="receiptPreview" class="border p-3 bg-light"></pre>
+            <button class="btn btn-primary" onclick="generateReceipt()">Download Receipt PDF</button>
+        </section>
 
+        <!-- Monthly Sales Report Section -->
+        <section id="salesReportSection" class="mb-5">
+            <h4>Monthly Sales Report Preview</h4>
+            <pre id="salesReportPreview" class="border p-3 bg-light"></pre>
+            <button class="btn btn-primary" onclick="downloadMonthlySalesReport()">Download Sales Report PDF</button>
+        </section>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

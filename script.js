@@ -156,4 +156,178 @@ function displayCustomers() {
     });
 }
 
+// Function to delete a customer
+function deleteCustomer(index) {
+    customers.splice(index, 1); // Remove the customer from the array
+    displayCustomers(); // Refresh the customer list
+}
+
+// Function to edit a customer's details
+function editCustomer(index) {
+    let customer = customers[index];
+    document.getElementById('customerName').value = customer.name;
+    document.getElementById('customerPhone').value = customer.phone;
+    
+    // Update button to save changes
+    document.getElementById('customerForm').innerHTML += `<button type="button" class="btn btn-success mt-3" onclick="saveCustomer(${index})">Save Changes</button>`;
+}
+
+// Function to save updated customer details
+function saveCustomer(index) {
+    let name = document.getElementById('customerName').value;
+    let phone = document.getElementById('customerPhone').value;
+
+    customers[index].name = name;
+    customers[index].phone = phone;
+
+    displayCustomers(); // Refresh the customer list
+    document.getElementById('customerForm').reset(); // Reset form
+}
+
+// Function to view orders for a customer
+function viewCustomerOrders(index) {
+    let customer = customers[index];
+    let ordersDiv = document.getElementById('customerOrders');
+
+    if (customer.orders.length > 0) {
+        let orderList = `<strong>Orders for ${customer.name}:</strong><br>`;
+        customer.orders.forEach((order, idx) => {
+            orderList += `${idx + 1}. ${order.name} - LKR ${order.price} x ${order.quantity} <br>`;
+        });
+        ordersDiv.innerHTML = orderList;
+    } else {
+        ordersDiv.innerHTML = `<strong>No orders for ${customer.name}</strong>`;
+    }
+}
+
+// Function to add order to a customer during the finalization of an order
+function addOrderToCustomer(customerName, order) {
+    let customer = customers.find(c => c.name === customerName);
+    if (customer) {
+        customer.orders.push(order); // Add order to the customer
+    } else {
+        alert('Customer not found.');
+    }
+}
+
+// Add item to cart with discount applied
+function addToCart(itemCode) {
+    let item = foodItems.find(item => item.code === itemCode);
+    let quantity = prompt('Enter quantity:', 1);
+
+    if (item && quantity > 0) {
+        let discountedPrice = item.price - (item.price * (item.discount / 100));
+        let cartItem = { ...item, quantity: Number(quantity), discountedPrice };
+        cart.push(cartItem);
+        displayCart();
+    }
+}
+
+// Display cart items with discounts applied
+function displayCart() {
+    let cartItemsContainer = document.getElementById('cartItems');
+    cartItemsContainer.innerHTML = ''; // Clear cart
+
+    cart.forEach(item => {
+        let totalItemPrice = item.discountedPrice * item.quantity;
+        let listItem = document.createElement('li');
+        listItem.className = 'list-group-item';
+        listItem.innerHTML = `
+            <strong>${item.name}</strong> - LKR ${item.discountedPrice} x ${item.quantity} = LKR ${totalItemPrice} (Discount Applied: ${item.discount}%)
+            <button class="btn btn-danger btn-sm float-end" onclick="removeFromCart('${item.code}')">Remove</button>
+        `;
+        cartItemsContainer.appendChild(listItem);
+    });
+}
+
+// Finalize the order and update the quantities in the foodItems table
+function finalizeOrder() {
+    let customerName = prompt("Enter Customer Name for this order:"); // Prompt for customer name
+    let orderDiscount = document.getElementById('orderDiscount').value || 0;
+    let total = cart.reduce((acc, item) => acc + (item.discountedPrice * item.quantity), 0);
+    let discountAmount = (total * orderDiscount) / 100;
+    let finalAmount = total - discountAmount;
+
+    // Add orders to customer
+    cart.forEach(item => {
+        addOrderToCustomer(customerName, item); // Associate the order with the customer
+    });
+
+    // Update quantities in foodItems
+    cart.forEach(item => {
+        let foodItem = foodItems.find(f => f.code === item.code);
+        if (foodItem) {
+            foodItem.quantity -= item.quantity; 
+        }
+    });
+
+    sales.push(...cart); // Store finalized order for sales report
+
+    generateReceiptPreview(finalAmount); 
+    generateMonthlySalesReport(); // Update the monthly sales report
+    displayFoodItems(); // Refresh the table to show updated quantities
+}
+
+// Generate and display receipt preview
+function generateReceiptPreview(finalAmount) {
+    let receiptPreview = document.getElementById('receiptPreview');
+    let receiptText = 'MOS Burgers Receipt\n\n';
+
+    cart.forEach((item, index) => {
+        receiptText += `${index + 1}. ${item.name} - LKR ${item.discountedPrice} x ${item.quantity}\n`;
+    });
+
+    receiptText += `\nTotal: LKR ${finalAmount}\n`;
+
+    receiptPreview.textContent = receiptText;
+}
+
+// Generate receipt PDF
+function generateReceipt() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    let receiptText = document.getElementById('receiptPreview').textContent;
+    doc.text(receiptText, 10, 10);
+    doc.save('receipt.pdf');
+}
+
+// Generate and display sales report preview
+function generateMonthlySalesReport() {
+    let salesReportPreview = document.getElementById('salesReportPreview');
+    let reportText = 'Monthly Sales Report\n\n';
+
+    sales.forEach((sale, index) => {
+        reportText += `${index + 1}. ${sale.name} - LKR ${sale.discountedPrice} x ${sale.quantity}\n`;
+    });
+
+    salesReportPreview.textContent = reportText;
+}
+
+// Generate sales report PDF
+function downloadMonthlySalesReport() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    let reportText = document.getElementById('salesReportPreview').textContent;
+    doc.text(reportText, 10, 10);
+    doc.save('monthly_sales_report.pdf');
+}
+
+// Search item in the foodItems table
+function searchItem() {
+    let input = document.getElementById('searchItemInput').value.toLowerCase();
+    let result = foodItems.find(item => item.name.toLowerCase().includes(input) || item.code.toLowerCase().includes(input));
+    if (result) {
+        document.getElementById('itemDetails').innerHTML = `
+            <strong>Item:</strong> ${result.name} <br>
+            <strong>Price:</strong> LKR ${result.price} <br>
+            <strong>Expiration:</strong> ${result.expiration} <br>
+            <strong>Discount:</strong> ${result.discount}% <br>
+            <button class="btn btn-success mt-3" onclick="addToCart('${result.code}')">Add to Cart</button>
+        `;
+    } else {
+        document.getElementById('itemDetails').innerHTML = 'No item found.';
+    }
+}
 document.addEventListener('DOMContentLoaded', displayFoodItems);
