@@ -87,6 +87,30 @@
             </div>
         </section>
 
+        <!-- Customer Management Section -->
+        <section id="customer-management" class="mb-5">
+            <h2 style="color: #b22222;">Customer Management</h2>
+            <h4 class="mb-3" style="color: #b22222;">Add Customer</h4>
+            <form id="customerForm">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" id="customerName" class="form-control" placeholder="Customer Name" required>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="customerPhone" class="form-control" placeholder="Phone Number" required>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary" style="background-color: #b22222;" onclick="addCustomer()">Add Customer</button>
+                    </div>
+                </div>
+            </form>
+            
+            <h4 class="mt-4" style="color: #b22222;">Customer List</h4>
+            <ul id="customers" class="list-group mt-3"></ul>
+
+            <h4 class="mt-4" style="color: #b22222;">Customer Orders</h4>
+            <div id="customerOrders" class="border p-3 bg-light"></div>
+        </section>
 
     </div>
 

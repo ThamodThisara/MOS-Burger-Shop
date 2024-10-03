@@ -124,4 +124,36 @@ function displayCart() {
     });
 }
 
+function addCustomer() {
+    let name = document.getElementById('customerName').value;
+    let phone = document.getElementById('customerPhone').value;
+
+    let newCustomer = {
+        name: name,
+        phone: phone,
+        orders: [] 
+    };
+
+    customers.push(newCustomer);
+    displayCustomers(); 
+    document.getElementById('customerForm').reset(); 
+}
+
+function displayCustomers() {
+    let customerList = document.getElementById('customers');
+    customerList.innerHTML = ''; 
+
+    customers.forEach((customer, index) => {
+        let listItem = document.createElement('li');
+        listItem.className = 'list-group-item';
+        listItem.innerHTML = `
+            <strong>${customer.name}</strong> - ${customer.phone}
+            <button class="btn btn-danger btn-sm float-end ms-2" onclick="deleteCustomer(${index})">Delete</button>
+            <button class="btn btn-secondary btn-sm float-end" onclick="editCustomer(${index})">Edit</button>
+            <button class="btn btn-info btn-sm float-end" onclick="viewCustomerOrders(${index})">View Orders</button>
+        `;
+        customerList.appendChild(listItem);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', displayFoodItems);
