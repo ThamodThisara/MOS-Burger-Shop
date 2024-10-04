@@ -306,20 +306,4 @@ function downloadMonthlySalesReport() {
     doc.text(reportText, 10, 10);
     doc.save('monthly_sales_report.pdf');
 }
-
-function searchItem() {
-    let input = document.getElementById('searchItemInput').value.toLowerCase();
-    let result = foodItems.find(item => item.name.toLowerCase().includes(input) || item.code.toLowerCase().includes(input));
-    if (result) {
-        document.getElementById('itemDetails').innerHTML = `
-            <strong>Item:</strong> ${result.name} <br>
-            <strong>Price:</strong> LKR ${result.price} <br>
-            <strong>Expiration:</strong> ${result.expiration} <br>
-            <strong>Discount:</strong> ${result.discount}% <br>
-            <button class="btn btn-success mt-3" onclick="addToCart('${result.code}')">Add to Cart</button>
-        `;
-    } else {
-        document.getElementById('itemDetails').innerHTML = 'No item found.';
-    }
-}
 document.addEventListener('DOMContentLoaded', displayFoodItems);
